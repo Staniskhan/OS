@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "../src/lab2WinAPI.cpp"
+#include "ThreadsWinAPI.h"
 
 
-TEST(ArrayCalculations, MinMaxCalculation) {
+TEST(MinMaxCalculations, simpleTest) {
     int *arr = new int[5]{ 3, 1, 4, 1, 5 };
     min_max_struct mms;
     mms.arr = arr;
@@ -12,17 +12,30 @@ TEST(ArrayCalculations, MinMaxCalculation) {
     EXPECT_EQ(mms.max, 5);
 }
 
-//TEST(ArrayCalculations, AverageCalculation) {
-//    int arr[] = { 1, 2, 3, 4, 5 };
-//    EXPECT_EQ(calculate_average(arr, 5), 3);
-//}
-//
-//TEST(ArrayCalculations, EmptyArray) {
-//    int* arr = nullptr;
-//    // Здесь нужно добавить обработку пустого массива в функциях
-//}
+TEST(MinMaxCalculations, overflowTest) {
+    int* arr = new int[6] {2147483647, -7651, -2147483646, 147, 57472 };
+    min_max_struct mms;
+    mms.arr = arr;
+    mms.size = 5;
+    min_max(&mms);
+    EXPECT_EQ(mms.min, -2147483646);
+    EXPECT_EQ(mms.max, 2147483647);
+}
 
-//int main(int argc, char** argv) {
-//    ::testing::InitGoogleTest(&argc, argv);
-//    return RUN_ALL_TESTS();
-//}
+TEST(AverageCalculations, simpleTest) {
+    int* arr = new int[5] { 3, 1, 4, 1, 5 };
+    avg_struct as;
+    as.arr = arr;
+    as.size = 5;
+    average(&as);
+    EXPECT_EQ(as.avg, 3);
+}
+
+TEST(AverageCalculations, overflowTest) {
+    int* arr = new int[5] {2147483647, 57, -2147483646, 11556, -6545 };
+    avg_struct as;
+    as.arr = arr;
+    as.size = 5;
+    average(&as);
+    EXPECT_EQ(as.avg, 1014);
+}

@@ -5,18 +5,24 @@ project(lab2)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+include_directories(src)
+
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/executables)
 
 add_executable(
   Main
   src/lab2WinAPI.cpp
 )
 
+add_executable(
+  MainThread
+  src/lab2Thread.cpp
+)
+
 target_link_libraries(
 	Main
 	kernel32
 )
-
 
 include(FetchContent)
 FetchContent_Declare(
