@@ -182,35 +182,36 @@ TEST(displayFactorial, emptyArrayTest)
 	EXPECT_EQ(output, "ARRAY IS EMPTY!\n");
 }
 
-//TEST(fileOutAll, simpleTest)
-//{
-//	vector<int> arr = { 1, 1, 2, 6, 24, 120, 720 };
-//
-//	streambuf* origCin = cin.rdbuf();
-//	string inputData("testfiles/file.txt");
-//	istringstream inputStream(inputData);
-//	cin.rdbuf(inputStream.rdbuf());
-//
-//	fileOutAll(arr);
-//
-//	cin.rdbuf(origCin);
-//
-//	string check = "0! - 1\n"
-//		"1! - 1\n"
-//		"2! - 2\n"
-//		"3! - 6\n"
-//		"4! - 24\n"
-//		"5! - 120\n"
-//		"6! - 720\n";
-//	string output;
-//	ifstream in;
-//	in.open("testfiles/file.txt");
-//	while (in >> output)
-//	{
-//		output += "\n";
-//	}
-//	EXPECT_EQ(output, check);
-//}
+TEST(fileOutAll, simpleTest)
+{
+	vector<int> arr = { 1, 1, 2, 6, 24, 120, 720 };
+
+	streambuf* origCin = cin.rdbuf();
+	string inputData("testFileOutAllTask1.txt");
+	istringstream inputStream(inputData);
+	cin.rdbuf(inputStream.rdbuf());
+
+	fileOutAll(arr);
+
+	cin.rdbuf(origCin);
+
+	string check = "0! - 1\n"
+		"1! - 1\n"
+		"2! - 2\n"
+		"3! - 6\n"
+		"4! - 24\n"
+		"5! - 120\n"
+		"6! - 720\n";
+	string output = "";
+	string token;
+	ifstream in;
+	in.open("testFileOutAllTask1.txt");
+	while (getline(in, token))
+	{
+		output += token + "\n";
+	}
+	EXPECT_EQ(output, check);
+}
 
 TEST(fileOutAll, emptyArrayTest)
 {

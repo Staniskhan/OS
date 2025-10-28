@@ -6,12 +6,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(tasks)
+include_directories(dependencies)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/executables)
 
 add_executable(
   task1
   tasks/task1.cpp
+)
+
+add_executable(
+  task2
+  tasks/task2.cpp
 )
 
 include(FetchContent)
@@ -26,16 +32,28 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-	tests
+	tests1
 	tests/tests_task1.cpp
+)
+
+add_executable(
+	tests2
+	tests/tests_task2.cpp
 )
 
 	
 target_link_libraries(
-  tests
+  tests1
+  PRIVATE
+  GTest::gtest_main
+)
+
+target_link_libraries(
+  tests2
   PRIVATE
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(tests)
+gtest_discover_tests(tests1)
+gtest_discover_tests(tests2)
