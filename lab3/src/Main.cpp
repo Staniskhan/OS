@@ -1,69 +1,56 @@
-#include "header.h"
 #include <iostream>
 #include <windows.h>
 #include <vector>
+#include "functions.h"
 using namespace std;
-
-
-
-
-
-
-
-
 
 int main()
 {
-	paramstr param;
+	params p;
 	//1
-	hConsoleMutex = CreateMutex(NULL, FALSE, NULL);
-	askCapasity();
+	p.hConsoleMutex = CreateMutex(NULL, FALSE, NULL);
+	askCapasity(p);
 
 	//2
-	initializeZero(param.arr, param.n);
+	initializeZero(p);
 
 	//3
-	int markerNum = askMarkerNum();
+	askMarkerNum(p);
 
 	//4
-	vector<HANDLE> threadHandles = createThreads(markerNum);
+	vector<HANDLE> threadHandles = createThreads(p);
 
 	//5
-	SetEvent(hStartEvent);                  //////////////////////////////////
+	SetEvent(p.hStartEvent);                  //////////////////////////////////
 
 	//6
-	bool* ifAct = createBoolArray(markerNum);
-	int numOfLeftMarkers = markerNum;
+	bool* ifAct = createBoolArray(p.markerNum);
+	int numOfLeftMarkers = p.markerNum;
 	while (numOfLeftMarkers > 0)
 	{
 		//6.1
 		//WaitForMultipleObjects(leftMarkers, impToCont.data(), TRUE, INFINITE);
 		vector<HANDLE> leftMarkers;
-		for (int i = 0; i < markerNum; i++)
+		for (int i = 0; i < p.markerNum; i++)
 		{
 			if (ifAct[i])
 			{
-				leftMarkers.push_back(impToCont[i]);
+				leftMarkers.push_back(p.impToCont[i]);
 			}
 		}
 		WaitForMultipleObjects(numOfLeftMarkers, leftMarkers.data(), TRUE, INFINITE);
 
 		//6.2                                                                                            // mutex
-		WaitForSingleObject(hMutex, INFINITE);
-		printArr();
+		WaitForSingleObject(p.hMutex, INFINITE);
+		printArr(p);
 		cout << endl;
-		ReleaseMutex(hMutex);
+		ReleaseMutex(p.hMutex);
 
 		//6.3
-		int numOfClosingThread = -1;
-		while (numOfClosingThread < 1 || numOfClosingThread > markerNum || !ifAct[numOfClosingThread - 1])
-		{
-			cout << "\nEnter the number of thread you would like to close (from 1 to " << markerNum << "): ";
-			cin >> numOfClosingThread;
-		}
+		int numOfClosingThread = askNumberOfThreadToClose(p, ifAct);
 
 		//6.4
-		SetEvent(shutDown[numOfClosingThread - 1]);
+		SetEvent(p.shutDown[numOfClosingThread - 1]);
 
 		//6.5
 		WaitForSingleObject(threadHandles[numOfClosingThread - 1], INFINITE);
@@ -71,35 +58,35 @@ int main()
 		ifAct[numOfClosingThread - 1] = false;
 
 		//6.6
-		WaitForSingleObject(hMutex, INFINITE);
-		for (int i = 0; i < n; i++)
+		WaitForSingleObject(p.hMutex, INFINITE);
+		for (int i = 0; i < p.n; i++)
 		{
-			cout << arr[i] << ' ';
+			cout << p.arr[i] << ' ';
 		}
 		cout << endl;
-		ReleaseMutex(hMutex);
+		ReleaseMutex(p.hMutex);
 
-		for (int i = 0; i < markerNum; i++)
+		for (int i = 0; i < p.markerNum; i++)
 		{
 			if (ifAct[i])
 			{
-				ResetEvent(impToCont[i]);
+				ResetEvent(p.impToCont[i]);
 			}
 		}
 
 		//6.7
-		SetEvent(hStartEvent);                                                   /////////////////////////
+		SetEvent(p.hStartEvent);                                                   /////////////////////////
 	}
 
-	delete[] arr;
+	delete[] p.arr;
 	delete[] ifAct;
-	CloseHandle(hStartEvent);
-	CloseHandle(hMutex);
-	CloseHandle(hConsoleMutex);
-	for (int i = 0; i < markerNum; i++)
+	CloseHandle(p.hStartEvent);
+	CloseHandle(p.hMutex);
+	CloseHandle(p.hConsoleMutex);
+	for (int i = 0; i < p.markerNum; i++)
 	{
-		CloseHandle(impToCont[i]);
-		CloseHandle(shutDown[i]);
+		CloseHandle(p.impToCont[i]);
+		CloseHandle(p.shutDown[i]);
 		CloseHandle(threadHandles[i]);
 	}
 

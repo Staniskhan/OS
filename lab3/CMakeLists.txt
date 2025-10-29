@@ -1,19 +1,17 @@
-cmake_minimum_required(VERSION 3.10)
-project(Lab3)
+cmake_minimum_required(VERSION 3.12)
+project(Lab3 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include)
-include_directories(src)
+include_directories(includes)
 
-add_executable(Main src/Main.cpp src/functions.cpp)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/executables)
 
-# add_executable(Tests tests/Tests.cpp src/functions.cpp)
+add_executable(Main src/Main.cpp)
 
 target_link_libraries(Main PRIVATE kernel32)
-# target_link_libraries(Tests PRIVATE kernel32)
-#[[
+
 Include(FetchContent)
 
 FetchContent_Declare(
@@ -24,10 +22,12 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+add_executable(Tests tests/Tests.cpp)
+
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+
 include(CTest)
 include(Catch)
 catch_discover_tests(Tests)
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)
-]]
