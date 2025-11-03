@@ -10,6 +10,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/executables)
 
 add_executable(Main src/Main.cpp)
 
+# add_executable(MainThread src/MainThread.cpp)
+
 target_link_libraries(Main PRIVATE kernel32)
 
 Include(FetchContent)

@@ -83,10 +83,9 @@ DWORD WINAPI Marker(LPVOID x)
 			if (result == WAIT_OBJECT_0 + 1)
 			{
 				running = false;
+				ResetEvent(mcp->p.impToCont[numberOfMarker - 1]);
 			}
-			ResetEvent(mcp->p.impToCont[numberOfMarker - 1]);
-
-			if (result == WAIT_OBJECT_0)
+			else if (result == WAIT_OBJECT_0)
 			{
 				ResetEvent(mcp->p.hStartEvent);
 			}

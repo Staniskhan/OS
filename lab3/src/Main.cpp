@@ -59,10 +59,7 @@ int main()
 
 		//6.6
 		WaitForSingleObject(p.hMutex, INFINITE);
-		for (int i = 0; i < p.n; i++)
-		{
-			cout << p.arr[i] << ' ';
-		}
+		printArr(p);
 		cout << endl;
 		ReleaseMutex(p.hMutex);
 

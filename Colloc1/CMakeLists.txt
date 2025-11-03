@@ -20,6 +20,11 @@ add_executable(
   tasks/task2.cpp
 )
 
+add_executable(
+  task3
+  tasks/task3.cpp
+)
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -41,6 +46,10 @@ add_executable(
 	tests/tests_task2.cpp
 )
 
+add_executable(
+	tests3
+	tests/tests_task3.cpp
+)
 	
 target_link_libraries(
   tests1
@@ -54,6 +63,13 @@ target_link_libraries(
   GTest::gtest_main
 )
 
+target_link_libraries(
+  tests3
+  PRIVATE
+  GTest::gtest_main
+)
+
 include(GoogleTest)
 gtest_discover_tests(tests1)
 gtest_discover_tests(tests2)
+gtest_discover_tests(tests3)
