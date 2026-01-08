@@ -31,12 +31,12 @@ public class TaskController
     {
         if (task.getID() != null)
         {
-            throw new IllegalArgumentException("ID must be empty when posting the task");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID must be empty when posting the task");
         }
         if ((task.getTitle() == null || task.getTitle().isEmpty()) &&
                 (task.getDescription() == null || task.getDescription().isEmpty()))
         {
-            throw new IllegalArgumentException("The posted task is empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The posted task is empty");
         }
         return taskService.createTask(task);
     }
@@ -75,14 +75,44 @@ public class TaskController
     {
         if (task.getID() != null)
         {
-            throw new IllegalArgumentException("ID must be empty when posting the task");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID must be empty when posting the task");
         }
         if ((task.getTitle() == null || task.getTitle().isEmpty()) &&
                 (task.getDescription() == null || task.getDescription().isEmpty()))
         {
-            throw new IllegalArgumentException("The posted task is empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The posted task is empty");
         }
-        return taskService.rewriteTask(id, task);
+        try
+        {
+            return taskService.rewriteTask(id, task);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
+        }
+    }
+
+    @PutMapping("/tasks")
+    @ResponseStatus(HttpStatus.OK)
+    public Task rewriteTask(@RequestBody Task task)
+    {
+        if (task.getID() == null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID is not defined");
+        }
+        if ((task.getTitle() == null || task.getTitle().isEmpty()) &&
+                (task.getDescription() == null || task.getDescription().isEmpty()))
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The posted task is empty");
+        }
+        try
+        {
+            return taskService.rewriteTask(task.getID(), task);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
+        }
     }
 
     @PatchMapping("tasks/{id}")
@@ -91,8 +121,33 @@ public class TaskController
     {
         if (task.getID() != null)
         {
-            throw new IllegalArgumentException("You can't patch ID");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't patch ID");
         }
-        return taskService.updateTask(id, task);
+        try
+        {
+            return taskService.updateTask(id, task);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
+        }
+    }
+
+    @PatchMapping("/tasks")
+    @ResponseStatus(HttpStatus.OK)
+    public Task updateTask(@RequestBody Task task)
+    {
+        if (task.getID() == null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID is not defined");
+        }
+        try
+        {
+            return taskService.updateTask(task.getID(), task);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
+        }
     }
 }

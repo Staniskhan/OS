@@ -23,7 +23,7 @@ public class TaskService
 
     public Task createTask(Task task)
     {
-        task.setTitle(processTitle(task.getTitle()));
+
 
 
         if (!validateTaskStatus(task))
@@ -38,7 +38,11 @@ public class TaskService
         {
             task.setTitle("No title");
         }
-        else if (task.getDescription() == null || task.getDescription().isEmpty())
+        else
+        {
+            task.setTitle(processTitle(task.getTitle()));
+        }
+        if (task.getDescription() == null || task.getDescription().isEmpty())
         {
             task.setDescription("No description");
         }
@@ -59,7 +63,7 @@ public class TaskService
 
     public Task rewriteTask(Long id, Task task)
     {
-        task.setTitle(processTitle(task.getTitle()));
+
 
 
         if (!validateTaskStatus(task))
@@ -74,7 +78,11 @@ public class TaskService
         {
             task.setTitle("No title");
         }
-        else if (task.getDescription() == null || task.getDescription().isEmpty())
+        else
+        {
+            task.setTitle(processTitle(task.getTitle()));
+        }
+        if (task.getDescription() == null || task.getDescription().isEmpty())
         {
             task.setDescription("No description");
         }
