@@ -86,6 +86,37 @@ public class TaskService
         return taskRepository.rewriteTask(task);
     }
 
+    public Task updateTask(Long id, Task task)
+    {
+        task.setID(id);
+
+        List<Task> tasks = taskRepository.getAllTasks();
+
+        Task curr = tasks.get((int)(id - 1));
+
+        if (task.getTitle() != null && !task.getTitle().isEmpty() && !curr.getTitle().equals(task.getTitle()))
+        {
+            curr.setTitle(processTitle(task.getTitle()));
+        }
+
+        if (task.getDescription() != null && !task.getDescription().isEmpty() && !curr.getDescription().equals(task.getDescription()))
+        {
+            curr.setDescription(task.getDescription());
+        }
+
+        if (task.getStatus() != null && !task.getStatus().isEmpty() && !curr.getStatus().equals(task.getStatus()))
+        {
+            if (!validateTaskStatus(task))
+            {
+                throw new IllegalArgumentException("the patched status is wrong");
+            }
+
+            curr.setStatus(task.getStatus());
+        }
+
+        return taskRepository.rewriteTask(curr);
+    }
+
 
 
 

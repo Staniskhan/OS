@@ -84,4 +84,15 @@ public class TaskController
         }
         return taskService.rewriteTask(id, task);
     }
+
+    @PatchMapping("tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task updateTask(@PathVariable("id") Long id, @RequestBody Task task)
+    {
+        if (task.getID() != null)
+        {
+            throw new IllegalArgumentException("You can't patch ID");
+        }
+        return taskService.updateTask(id, task);
+    }
 }
