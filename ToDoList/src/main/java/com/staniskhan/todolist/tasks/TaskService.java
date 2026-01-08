@@ -122,6 +122,10 @@ public class TaskService
 
     private String processTitle(String title)
     {
+        if (title.equals("No title"))
+        {
+            return title;
+        }
         List<Task> tasks = taskRepository.getAllTasks();
         int count = 0;
         for (int i = 0; i < tasks.size(); i++) {
