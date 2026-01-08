@@ -46,13 +46,12 @@ public class TaskRepository
     public Task createTask(Task task)
     {
         List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
-        task.setID((long)(tasks.size() + 1));
         tasks.add(task);
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(TASKS_FILE, tasks);
         return task;
     }
 
-    public Task findTaskByID(Long id)
+    public Task getTaskByID(Long id)
     {
         List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
         return tasks.get((int)(id - 1));

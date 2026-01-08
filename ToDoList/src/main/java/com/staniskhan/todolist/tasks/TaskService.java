@@ -23,6 +23,13 @@ public class TaskService
 
     public Task createTask(Task task)
     {
+        List<Task> tasks = taskRepository.getAllTasks();
+        task.setID((long)(tasks.size() + 1));
+
+
+        task.setTitle(processTitle(task.getTitle()));
+
+
         if (!validateTaskStatus(task))
         {
             throw new IllegalArgumentException("the status in posted task is wrong");
@@ -39,7 +46,42 @@ public class TaskService
         {
             task.setDescription("No description");
         }
+
+
         return taskRepository.createTask(task);
+    }
+
+    public Task getTask(Long id)
+    {
+        return taskRepository.getTaskByID(id);
+    }
+
+
+
+
+
+
+    private String processTitle(String title)
+    {
+        List<Task> tasks = taskRepository.getAllTasks();
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            boolean found = false;
+            for (Task task : tasks) {
+                if (task.getTitle().equals(title)) {
+                    count++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) break;
+            if (count > 1)
+            {
+                title = title.substring(0, title.length() - 2);
+            }
+            title += " " + count;
+        }
+        return title;
     }
 
     private boolean validateTaskStatus(Task task)
@@ -51,8 +93,4 @@ public class TaskService
                 task.getStatus().equals("done");
     }
 
-    public Task getTask(Long id)
-    {
-        return taskRepository.findTaskByID(id);
-    }
 }
