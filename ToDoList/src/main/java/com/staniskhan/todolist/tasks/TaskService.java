@@ -23,10 +23,6 @@ public class TaskService
 
     public Task createTask(Task task)
     {
-        List<Task> tasks = taskRepository.getAllTasks();
-        task.setID((long)(tasks.size() + 1));
-
-
         task.setTitle(processTitle(task.getTitle()));
 
 
@@ -56,7 +52,39 @@ public class TaskService
         return taskRepository.getTaskByID(id);
     }
 
+    public void deleteTask(Long id)
+    {
+        taskRepository.deleteTaskByID(id);
+    }
 
+    public Task rewriteTask(Long id, Task task)
+    {
+        task.setTitle(processTitle(task.getTitle()));
+
+
+        if (!validateTaskStatus(task))
+        {
+            throw new IllegalArgumentException("the status in posted task is wrong");
+        }
+        if (task.getStatus() == null || task.getStatus().isEmpty())
+        {
+            task.setStatus("todo");
+        }
+        if (task.getTitle() == null || task.getTitle().isEmpty())
+        {
+            task.setTitle("No title");
+        }
+        else if (task.getDescription() == null || task.getDescription().isEmpty())
+        {
+            task.setDescription("No description");
+        }
+
+
+        task.setID(id);
+
+
+        return taskRepository.rewriteTask(task);
+    }
 
 
 
@@ -92,5 +120,4 @@ public class TaskService
                 task.getStatus().equals("in_progress") ||
                 task.getStatus().equals("done");
     }
-
 }

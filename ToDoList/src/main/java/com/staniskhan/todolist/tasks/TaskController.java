@@ -54,4 +54,34 @@ public class TaskController
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
         }
     }
+
+    @DeleteMapping("tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTask(@PathVariable("id") Long id)
+    {
+        try
+        {
+            taskService.deleteTask(id);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request page does not exist");
+        }
+    }
+
+    @PutMapping("tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task rewriteTask(@PathVariable("id") Long id, @RequestBody Task task)
+    {
+        if (task.getID() != null)
+        {
+            throw new IllegalArgumentException("ID must be empty when posting the task");
+        }
+        if ((task.getTitle() == null || task.getTitle().isEmpty()) &&
+                (task.getDescription() == null || task.getDescription().isEmpty()))
+        {
+            throw new IllegalArgumentException("The posted task is empty");
+        }
+        return taskService.rewriteTask(id, task);
+    }
 }

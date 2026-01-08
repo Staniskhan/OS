@@ -46,6 +46,7 @@ public class TaskRepository
     public Task createTask(Task task)
     {
         List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        task.setID((long)(tasks.size() + 1));
         tasks.add(task);
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(TASKS_FILE, tasks);
         return task;
@@ -55,5 +56,26 @@ public class TaskRepository
     {
         List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
         return tasks.get((int)(id - 1));
+    }
+
+    public void deleteTaskByID(Long id)
+    {
+        List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        tasks.remove((int)(id - 1));
+        for (int i = (int)(id - 1); i < tasks.size(); i++)
+        {
+            Task curr = tasks.get(i);
+            curr.setID((long)(i + 1));
+            tasks.set(i, curr);
+        }
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(TASKS_FILE, tasks);
+    }
+
+    public Task rewriteTask(Task task)
+    {
+        List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        tasks.set((int)(task.getID() - 1), task);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(TASKS_FILE, tasks);
+        return task;
     }
 }
