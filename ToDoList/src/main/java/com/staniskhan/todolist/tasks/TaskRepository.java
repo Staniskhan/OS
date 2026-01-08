@@ -1,4 +1,60 @@
 package com.staniskhan.todolist.tasks;
 
-public class TaskRepository {
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+@Repository
+public class TaskRepository
+{
+    private File TASKS_FILE;
+    private ObjectMapper objectMapper;
+
+    public TaskRepository(@Value("${app.tasks.file.path}") String path)
+    {
+        objectMapper = new ObjectMapper();
+
+
+        try
+        {
+            TASKS_FILE = new File(path);
+            if (TASKS_FILE.createNewFile())
+            {
+                System.out.println("File tasks.json is created successfully");
+            }
+            else
+            {
+                System.out.println("File tasks.json already exists");
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error in opening/creating file tasks.json");
+        }
+    }
+
+    public List<Task> getAllTasks()
+    {
+        return objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+    }
+
+    public Task createTask(Task task)
+    {
+        List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        task.setID((long)(tasks.size() + 1));
+        tasks.add(task);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(TASKS_FILE, tasks);
+        return task;
+    }
+
+    public Task findTaskByID(Long id)
+    {
+        List<Task> tasks = objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        return tasks.get((int)(id - 1));
+    }
 }

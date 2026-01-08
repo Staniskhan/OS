@@ -18,6 +18,8 @@ public class Task
         this.setStatus(status);
     }
 
+    public Task() {};
+
     public Long getID() {
         return ID;
     }
