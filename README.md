@@ -1,4 +1,4 @@
-Projects made di=uring the study of the discipline "Operating systems".
+Projects made during the study of the discipline "Operating systems".
 -
 
 _____________________________________________________________________________________
