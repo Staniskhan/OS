@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,15 @@ public class TaskRepository
 
     public List<Task> getAllTasks()
     {
-        return objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {});
+        try
+        {
+            return objectMapper.readValue(TASKS_FILE, new TypeReference<List<Task>>() {
+            });
+        }
+        catch(MismatchedInputException e)
+        {
+            return null;
+        }
     }
 
     public Task createTask(Task task)
